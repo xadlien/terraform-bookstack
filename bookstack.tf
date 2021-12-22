@@ -12,7 +12,7 @@ provider "docker" {
 }
 
 resource "docker_network" "bookstack_network" {
-    name = "bookstack_network"
+    name = "bookstack_network_${terraform.workspace}"
 }
 
 resource "docker_image" "bookstack" {
@@ -27,9 +27,9 @@ resource "docker_image" "mariadb" {
 
 resource "docker_container" "bookstack_mariadb" {
   image = docker_image.mariadb.latest
-  name  = "bookstack_mariadb"
+  name  = "bookstack_mariadb_${terraform.workspace}"
   networks_advanced {
-    name = "bookstack_network"
+    name = "bookstack_network_${terraform.workspace}"
   }
   volumes {
     volume_name = "bookstack_data"
@@ -48,23 +48,23 @@ resource "docker_container" "bookstack_mariadb" {
 
 resource "docker_container" "bookstack" {
   image = docker_image.bookstack.latest
-  name  = "bookstack"
+  name  = "bookstack_${terraform.workspace}"
   networks_advanced {
-    name = "bookstack_network"
+    name = "bookstack_network_${terraform.workspace}"
   }
   ports {
     internal = 80
     external = 8080
   }
   volumes {
-    volume_name = "bookstack_data"
+    volume_name = "bookstack_data_${terraform.workspace}"
     container_path = "/config"
   }
   env = [
       "PUID=1000",
       "PGID=1000",
       "APP_URL=http://localhost:8080",
-      "DB_HOST=bookstack_mariadb",
+      "DB_HOST=bookstack_mariadb_${terraform.workspace}",
       "DB_USER=bookstack",
       "DB_DATABASE=bookstackapp",
       "DB_PASSWORD=bookstackpass"

@@ -12,5 +12,5 @@ provider "docker" {
 }
 
 resource "docker_volume" "bookstack_data" {
-  name = "bookstack_data"
+  name = "bookstack_data_${terraform.workspace}"
 }
