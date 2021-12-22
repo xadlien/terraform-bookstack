@@ -44,6 +44,10 @@ resource "docker_container" "bookstack_mariadb" {
       "MYSQL_USER=bookstack",
       "MYSQL_PASSWORD=bookstackpass"
   ]
+    depends_on = [
+      docker_image.mariadb,
+      docker_network.bookstack_network,
+  ]
 }
 
 resource "docker_container" "bookstack" {
@@ -68,5 +72,10 @@ resource "docker_container" "bookstack" {
       "DB_USER=bookstack",
       "DB_DATABASE=bookstackapp",
       "DB_PASSWORD=bookstackpass"
+  ]
+  depends_on = [
+      docker_container.bookstack_mariadb,
+      docker_image.bookstack,
+      docker_network.bookstack_network,
   ]
 }
