@@ -32,7 +32,7 @@ resource "docker_container" "bookstack_mariadb" {
     name = "bookstack_network_${terraform.workspace}"
   }
   volumes {
-    volume_name = "bookstack_data"
+    volume_name = "bookstack_data_${terraform.workspace}"
     container_path = "/config"
   }
   env = [
