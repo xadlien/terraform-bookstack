@@ -58,7 +58,7 @@ resource "docker_container" "bookstack" {
   }
   ports {
     internal = 80
-    external = 8080
+    external = (terraform.workspace == "dev") ? 8081 : 8080
   }
   volumes {
     volume_name = "bookstack_data_${terraform.workspace}"
@@ -67,7 +67,7 @@ resource "docker_container" "bookstack" {
   env = [
       "PUID=1000",
       "PGID=1000",
-      "APP_URL=http://localhost:8080",
+      (terraform.workspace == "dev") ? "APP_URL=http://localhost:8081" : "APP_URL=http://localhost:8080",
       "DB_HOST=bookstack_mariadb_${terraform.workspace}",
       "DB_USER=bookstack",
       "DB_DATABASE=bookstackapp",
